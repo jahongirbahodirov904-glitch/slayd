@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0e16">
+  <title>MENTOR — Mening ustozim</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #0b0e16;
+      --panel: #121724;
+      --line: #293044;
+      --text: #f5f2ea;
+      --muted: #a1a8b8;
+      --mint: #b5f4d4;
+      --gold: #e5bd7a
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Manrope, Arial, sans-serif;
+      overflow: hidden
+    }
+
+    button {
+      font: inherit
+    }
+
+    .topbar {
+      height: 68px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vw;
+      background: #0b0e16d9;
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid #ffffff12
+    }
+
+    .brand {
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .08em;
+      font-size: 13px
+    }
+
+    .brand b {
+      color: var(--mint);
+      font-weight: 500
+    }
+
+    .status {
+      font: 11px 'DM Mono', monospace;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 14px var(--mint)
+    }
+
+    .deck {
+      height: 100dvh;
+      position: relative
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 100px 7vw 88px;
+      align-items: center;
+      justify-content: center;
+      overflow: auto
+    }
+
+    .slide.active {
+      display: flex;
+      animation: enter .55s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    @keyframes enter {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(.99)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    .kicker {
+      font: 11px 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .19em;
+      color: var(--mint);
+      margin-bottom: 22px
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: -.035em;
+      line-height: 1.04
+    }
+
+    h1 {
+      font-size: clamp(54px, 9vw, 122px);
+      max-width: 800px
+    }
+
+    h2 {
+      font-size: clamp(40px, 6vw, 76px);
+      margin-bottom: 25px
+    }
+
+    p {
+      font-size: clamp(15px, 1.4vw, 18px);
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 620px
+    }
+
+    .accent {
+      color: var(--mint)
+    }
+
+    .gold {
+      color: var(--gold)
+    }
+
+    .cover {
+      justify-content: flex-start;
+      background: radial-gradient(ellipse at 80% 45%, #203a35 0%, transparent 38%), linear-gradient(115deg, #0b0e16 10%, #111b24 100%)
+    }
+
+    .cover-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      align-items: center;
+      gap: 4vw
+    }
+
+    .cover-copy {
+      position: relative;
+      z-index: 2
+    }
+
+    .cover h1 {
+      margin-bottom: 27px
+    }
+
+    .cover p {
+      max-width: 520px
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #b5f4d44a;
+      padding: 10px 14px;
+      border-radius: 99px;
+      color: #dce8e0;
+      font: 11px 'DM Mono', monospace;
+      margin-bottom: 30px
+    }
+
+    .hero-portrait {
+      position: relative;
+      width: min(100%, 480px);
+      justify-self: center
+    }
+
+    .hero-portrait:before {
+      content: "";
+      position: absolute;
+      inset: -16px 16px 16px -16px;
+      border: 1px solid #b5f4d466;
+      border-radius: 220px 220px 18px 18px
+    }
+
+    .hero-portrait:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 58%, #0b0e16b8 100%);
+      border-radius: 220px 220px 18px 18px;
+      pointer-events: none
+    }
+
+    .hero-portrait img {
+      display: block;
+      width: 100%;
+      height: min(65vh, 660px);
+      object-fit: cover;
+      object-position: center 18%;
+      border-radius: 220px 220px 18px 18px;
+      filter: saturate(.83)
+    }
+
+    .photo-tag {
+      position: absolute;
+      z-index: 3;
+      bottom: 22px;
+      left: 24px;
+      font: 11px 'DM Mono', monospace;
+      letter-spacing: .1em
+    }
+
+    .hero-index {
+      position: absolute;
+      right: -25px;
+      top: 22%;
+      writing-mode: vertical-rl;
+      font: 10px 'DM Mono', monospace;
+      color: var(--gold);
+      letter-spacing: .2em
+    }
+
+    .section {
+      width: min(1180px, 100%);
+      display: grid;
+      grid-template-columns: 1fr .9fr;
+      gap: clamp(35px, 7vw, 100px);
+      align-items: center
+    }
+
+    .section.reverse {
+      grid-template-columns: .9fr 1fr
+    }
+
+    .portrait {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      justify-self: center
+    }
+
+    .portrait img {
+      width: 100%;
+      height: min(64vh, 630px);
+      object-fit: cover;
+      object-position: center 18%;
+      border-radius: 12px 150px 12px 12px;
+      display: block;
+      filter: saturate(.85)
+    }
+
+    .frame {
+      position: absolute;
+      inset: 14px -14px -14px 14px;
+      border: 1px solid #b5f4d46b;
+      border-radius: 12px 150px 12px 12px;
+      z-index: -1
+    }
+
+    .meta {
+      font: 11px 'DM Mono', monospace;
+      color: #727e91;
+      margin-bottom: 20px
+    }
+
+    .big-number {
+      font: clamp(55px, 8vw, 105px) 'DM Mono', monospace;
+      color: #ffffff0d;
+      line-height: 1;
+      margin-bottom: -12px
+    }
+
+    .rule {
+      width: 65px;
+      height: 2px;
+      background: var(--mint);
+      margin: 28px 0
+    }
+
+    .quote {
+      background: radial-gradient(ellipse at center, #1d332f 0%, #0b0e16 72%);
+      text-align: center
+    }
+
+    .quote-inner {
+      max-width: 1050px
+    }
+
+    .quote-mark {
+      font: 100px Georgia;
+      color: var(--mint);
+      height: 75px;
+      opacity: .8
+    }
+
+    .quote blockquote {
+      font: clamp(35px, 6.5vw, 82px)/1.18 'Playfair Display', Georgia, serif;
+      letter-spacing: -.03em
+    }
+
+    .quote .byline {
+      font: 11px 'DM Mono', monospace;
+      color: var(--gold);
+      letter-spacing: .17em;
+      margin-top: 35px
+    }
+
+    .values {
+      width: min(1150px, 100%)
+    }
+
+    .values-head {
+      max-width: 800px;
+      margin-bottom: 36px
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, #141a28, #10141f);
+      padding: 28px 25px;
+      min-height: 210px;
+      border-radius: 14px;
+      transition: transform .25s, border-color .25s
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: #b5f4d477
+    }
+
+    .card .num {
+      font: 11px 'DM Mono', monospace;
+      color: var(--mint);
+      margin-bottom: 28px
+    }
+
+    .card h3 {
+      font: 25px 'Playfair Display', Georgia, serif;
+      margin-bottom: 12px;
+      font-weight: 500
+    }
+
+    .card p {
+      font-size: 14px;
+      line-height: 1.75
+    }
+
+    .closing {
+      background: radial-gradient(ellipse at 50% 100%, #213b34 0%, transparent 55%), var(--bg);
+      text-align: center
+    }
+
+    .closing-inner {
+      max-width: 850px
+    }
+
+    .closing h2 {
+      font-size: clamp(52px, 9vw, 110px)
+    }
+
+    .closing p {
+      margin: 0 auto
+    }
+
+    .heart {
+      font-size: 32px;
+      color: var(--gold);
+      margin: 20px
+    }
+
+    .footer-note {
+      font: 11px 'DM Mono', monospace;
+      color: #8b95a8;
+      margin-top: 35px
+    }
+
+    .controls {
+      position: fixed;
+      z-index: 30;
+      right: 5vw;
+      bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .ctrl {
+      width: 43px;
+      height: 43px;
+      border-radius: 50%;
+      border: 1px solid #ffffff2b;
+      background: #171d2b;
+      color: var(--text);
+      cursor: pointer;
+      transition: .2s
+    }
+
+    .ctrl:hover {
+      background: var(--mint);
+      color: #10151b
+    }
+
+    .next {
+      width: auto;
+      border-radius: 99px;
+      padding: 0 18px;
+      font-size: 12px
+    }
+
+    .counter {
+      font: 11px 'DM Mono', monospace;
+      color: var(--muted);
+      padding: 0 7px
+    }
+
+    .hint {
+      position: fixed;
+      left: 5vw;
+      bottom: 39px;
+      z-index: 30;
+      color: #727e91;
+      font: 10px 'DM Mono', monospace
+    }
+
+    .progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--mint);
+      z-index: 40;
+      transition: width .3s
+    }
+
+    @media(max-width:760px) {
+      .topbar {
+        height: 58px;
+        padding: 0 20px
+      }
+
+      .status {
+        font-size: 9px
+      }
+
+      .slide {
+        padding: 82px 23px 100px;
+        align-items: flex-start
+      }
+
+      .cover-grid,
+      .section,
+      .section.reverse {
+        grid-template-columns: 1fr;
+        gap: 25px
+      }
+
+      .cover-grid {
+        align-items: start
+      }
+
+      .cover {
+        overflow: auto
+      }
+
+      .cover h1 {
+        font-size: clamp(54px, 14vw, 82px)
+      }
+
+      .hero-portrait {
+        width: min(70%, 270px);
+        margin: 0 auto
+      }
+
+      .hero-portrait img {
+        height: 30vh;
+        min-height: 220px
+      }
+
+      .hero-portrait:before {
+        inset: -9px 9px 9px -9px
+      }
+
+      .hero-index {
+        right: -20px
+      }
+
+      .section {
+        gap: 22px
+      }
+
+      .portrait {
+        width: min(75%, 300px);
+        order: 2
+      }
+
+      .portrait img {
+        height: 30vh;
+        min-height: 230px;
+        border-radius: 10px 100px 10px 10px
+      }
+
+      .frame {
+        border-radius: 10px 100px 10px 10px
+      }
+
+      h2 {
+        font-size: clamp(37px, 10vw, 56px);
+        margin-bottom: 16px
+      }
+
+      .kicker {
+        margin-bottom: 13px
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 1.75
+      }
+
+      .rule {
+        margin: 17px 0
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+        gap: 10px
+      }
+
+      .card {
+        min-height: 0;
+        padding: 18px
+      }
+
+      .card .num {
+        margin-bottom: 12px
+      }
+
+      .card h3 {
+        font-size: 22px
+      }
+
+      .quote {
+        align-items: center;
+        text-align: center
+      }
+
+      .quote-mark {
+        font-size: 75px;
+        height: 55px
+      }
+
+      .quote blockquote {
+        font-size: clamp(33px, 9vw, 54px)
+      }
+
+      .hint {
+        display: none
+      }
+
+      .controls {
+        right: 18px;
+        bottom: 16px
+      }
+
+      .ctrl {
+        width: 39px;
+        height: 39px
+      }
+
+      .next {
+        width: auto;
+        padding: 0 14px
+      }
+
+      .counter {
+        padding: 0 2px
+      }
+
+      .closing {
+        align-items: center;
+        text-align: center
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      *,
+      *:before,
+      *:after {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">STUDIO<span class="accent">/</span><b>USTOZ</b></div>
+    <div class="status"><span class="dot"></span> TAQDIMOT · LIVE</div>
+  </header>
+
+  <main class="deck">
+    <section class="slide cover active">
+      <div class="cover-grid">
+        <div class="cover-copy">
+          <div class="pill"><span class="dot"></span> MINNATDORLIK LOYIHASI / 2026</div>
+          <div class="kicker">Ilm. Mehr. Kelajak.</div>
+          <h1>Mening<br><span class="accent">ustozim.</span></h1>
+          <p>Bir insonning bilimi yo‘limizni yoritadi. Uning mehri esa qalbimizda bir umr qoladi.</p>
+        </div>
+        <div class="hero-portrait">
+          <img src="images/ustoz-1.png" alt="Mening ustozim">
+          <div class="photo-tag">01 — QALBIMDAGI USTOZ</div>
+          <div class="hero-index">USTOZGA EHTIROM</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="section">
+        <div>
+          <div class="meta">02 / USTOZIM HAQIDA</div>
+          <div class="big-number">01</div>
+          <div class="kicker">Mening yo‘l ko‘rsatuvchim</div>
+          <h2>Ilm sari ochilgan <span class="accent">eshik.</span></h2>
+          <div class="rule"></div>
+          <p>Mening ustozim — bilim berish bilan birga, o‘quvchilariga ishonch va umid ulashadigan inson. Har bir
+            darslari yangi imkoniyat, har bir nasihatlari esa hayot uchun muhim saboqdir.</p>
+        </div>
+        <div class="portrait"><img src="images/ustoz-2.png" alt="Ustozim">
+          <div class="frame"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="section reverse">
+        <div class="portrait"><img src="images/ustoz-1.png" alt="Ustozim gul bilan">
+          <div class="frame"></div>
+        </div>
+        <div>
+          <div class="meta">03 / FAZILATLARI</div>
+          <div class="big-number">02</div>
+          <div class="kicker">Mehr bilan berilgan saboq</div>
+          <h2>Qalbga yaqin, <span class="gold">ibratli inson.</span></h2>
+          <div class="rule"></div>
+          <p>Ustozimning samimiyligi, sabr-toqati va mehnatsevarligi menga doimo o‘rnak bo‘ladi. U kishining
+            talabchanligi mas’uliyatni, mehribonligi esa boshqalarga hurmat bilan qarashni o‘rgatadi.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide quote">
+      <div class="quote-inner">
+        <div class="kicker">04 / Yurakdan chiqqan so‘zlar</div>
+        <div class="quote-mark">“</div>
+        <blockquote>Ustoz — kelajakni yorituvchi chiroq, qalblarda umid uyg‘otuvchi inson.</blockquote>
+        <div class="byline">BIR USTOZ — MINGTA IMKONIYAT</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="values">
+        <div class="values-head">
+          <div class="meta">05 / MEN O‘RGANGAN SABOQLAR</div>
+          <div class="kicker">Darslikdan tashqarida</div>
+          <h2>Eng qimmatli <span class="accent">saboqlar.</span></h2>
+          <p>Ustozim menga faqat fanlarni emas, hayotda asqotadigan fazilatlarni ham o‘rgatadi.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="num">LESSON_01</div>
+            <h3>Bilim</h3>
+            <p>Izlanish, savol berish va har kuni yangilik o‘rganishdan to‘xtamaslik.</p>
+          </article>
+          <article class="card">
+            <div class="num">LESSON_02</div>
+            <h3>Odob</h3>
+            <p>Hurmat, halollik, mas’uliyat va atrofdagilarga mehr bilan munosabatda bo‘lish.</p>
+          </article>
+          <article class="card">
+            <div class="num">LESSON_03</div>
+            <h3>Ishonch</h3>
+            <p>Orzularga ishonish, qiyinchilikda taslim bo‘lmaslik va oldinga intilish.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="section">
+        <div>
+          <div class="meta">06 / MINNATDORLIK</div>
+          <div class="kicker">Samimiy tashakkur</div>
+          <h2>Mehnatingiz qalbimizda <span class="accent">qoladi.</span></h2>
+          <div class="rule"></div>
+          <p>Bizga ajratgan vaqtingiz, bergan bilimingiz va bildirgan ishonchingiz uchun rahmat. Sizning mehnatingiz
+            bizning kelajagimizga qo‘yilgan bebaho hissadir.</p>
+        </div>
+        <div class="portrait"><img src="images/ustoz-2.png" alt="Aziz ustozim">
+          <div class="frame"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide closing">
+      <div class="closing-inner">
+        <div class="kicker">Cheksiz hurmat bilan</div>
+        <h2>Aziz ustozim,<br><span class="accent">bor bo‘ling.</span></h2>
+        <div class="heart">✳</div>
+        <p>Sizga mustahkam sog‘lik, oilaviy baxt, qalb xotirjamligi va shogirdlaringiz yutuqlaridan doimo quvonib
+          yurishingizni tilayman.</p>
+        <div class="footer-note">SIZ BERGAN ILM — BIZ BILAN QOLADI · RAHMAT, USTOZ!</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="hint">← → NAVIGATE &nbsp; / &nbsp; SPACE NEXT</div>
+  <nav class="controls">
+    <button class="ctrl" id="prev" aria-label="Oldingi slayd">←</button>
+    <span class="counter" id="counter">01 / 07</span>
+    <button class="ctrl next" id="next">KEYINGI ↗</button>
+  </nav>
+  <div class="progress" id="progress"></div>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    let current = 0;
+    function showSlide(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+      document.querySelector('#counter').textContent =
+        `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      document.querySelector('#progress').style.width = `${(current + 1) / slides.length * 100}%`;
+    }
+    document.querySelector('#prev').addEventListener('click', () => showSlide(current - 1));
+    document.querySelector('#next').addEventListener('click', () => showSlide(current + 1));
+    document.addEventListener('keydown', event => {
+      if (['ArrowRight', ' ', 'Enter', 'ArrowDown'].includes(event.key)) {
+        event.preventDefault(); showSlide(current + 1);
+      }
+      if (['ArrowLeft', 'ArrowUp'].includes(event.key)) {
+        event.preventDefault(); showSlide(current - 1);
+      }
+    });
+    let touchX = 0;
+    document.addEventListener('touchstart', event => touchX = event.changedTouches[0].screenX, {passive: true});
+    document.addEventListener('touchend', event => {
+      const delta = event.changedTouches[0].screenX - touchX;
+      if (Math.abs(delta) > 60) showSlide(current + (delta < 0 ? 1 : -1));
+    }, {passive: true});
+    showSlide(0);
+  </script>
+</body>
+
+</html>
